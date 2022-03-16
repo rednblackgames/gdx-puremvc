@@ -2,6 +2,13 @@ plugins {
     id 'java'
 }
 
+apply from : 'publish.gradle'
+
+repositories {
+    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
 group 'games.rednblack.puremvc'
 version '1.0-SNAPSHOT'
 
@@ -16,4 +23,21 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+
+task dist(type: Jar) {
+    from files(sourceSets.main.output.classesDirs)
+    from files(sourceSets.main.output.resourcesDir)
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ["--release", "7"]
 }
