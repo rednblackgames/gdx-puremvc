@@ -1,4 +1,4 @@
-#gdx-puremvc
+# gdx-puremvc
 
 This is a minimal implementation of [PureMVC](https://puremvc.org/) design pattern using [libGDX](https://libgdx.com) data structures.
 Currently, only the `Core` version using [Singletons](https://en.wikipedia.org/wiki/Singleton_pattern).
