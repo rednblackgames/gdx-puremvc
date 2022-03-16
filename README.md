@@ -24,7 +24,6 @@ dependencies {
 </dependency>
 ```
 
-
 ### License
 The PureMVC Framework is available under the BSD 3-Clause Open Source License. Copyright © 2006-2021 [Futurescale, Inc](http://futurescale.com).
 
