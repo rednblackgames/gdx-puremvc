@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'games.rednblack.puremvc'
-version '1.0'
+version '1.0.1'
 
 apply from : 'publish.gradle'
 
@@ -12,16 +12,11 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
 
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
 
 test {
@@ -36,11 +31,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_7
 }
 
+compileTestJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 task dist(type: Jar) {
     from files(sourceSets.main.output.classesDirs)
     from files(sourceSets.main.output.resourcesDir)
-}
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs += ["--release", "7"]
 }

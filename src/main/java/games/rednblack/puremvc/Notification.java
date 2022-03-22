@@ -10,6 +10,24 @@ public class Notification implements INotification, Pool.Poolable {
     private Object body = null;
     private String type = null;
 
+    public Notification() {
+        this(null, null, null);
+    }
+
+    public Notification(String name) {
+        this(name, null, null);
+    }
+
+    public Notification(String name, Object body) {
+        this(name, body, null);
+    }
+
+    public Notification(String name, Object body, String type) {
+        this.name = name;
+        this.body = body;
+        this.type = type;
+    }
+
     void setBody(Object body) {
         this.body = body;
     }

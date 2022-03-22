@@ -47,4 +47,9 @@ public class Mediator<T> extends Notifier implements IMediator {
     public T getViewComponent() {
         return viewComponent;
     }
+
+    @Override
+    public final void notify(INotification notification) {
+        handleNotification(notification);
+    }
 }

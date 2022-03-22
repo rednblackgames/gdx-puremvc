@@ -4,10 +4,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-import games.rednblack.puremvc.interfaces.ICommand;
-import games.rednblack.puremvc.interfaces.IMediator;
-import games.rednblack.puremvc.interfaces.INotifiable;
-import games.rednblack.puremvc.interfaces.IProxy;
+import games.rednblack.puremvc.interfaces.*;
 import games.rednblack.puremvc.util.Interests;
 
 public class Facade {
@@ -20,8 +17,11 @@ public class Facade {
     }
 
     public synchronized static void dispose() {
+        if (instance == null) return;
+
         instance.proxiesMap.clear();
         instance.mediatorsMap.clear();
+        instance.commandsMap.clear();
         for (SnapshotArray<INotifiable> observers : instance.observersMap.values()) {
             observers.clear();
         }
@@ -31,16 +31,20 @@ public class Facade {
     }
 
     private final ObjectMap<String, SnapshotArray<INotifiable>> observersMap;
-    private final ObjectMap<String, IMediator> mediatorsMap;
-    private final ObjectMap<String, IProxy<?>> proxiesMap;
+    private final ObjectMap<String, IMediator> mediatorsMap; //View
+    private final ObjectMap<String, IProxy<?>> proxiesMap; //Model
+    private final ObjectMap<String, ICommand> commandsMap; //Controller
 
     private Facade() {
         observersMap = new ObjectMap<>();
         mediatorsMap = new ObjectMap<>();
         proxiesMap = new ObjectMap<>();
+        commandsMap = new ObjectMap<>();
     }
 
     public void registerMediator(IMediator mediator) {
+        IMediator oldMediator = mediatorsMap.get(mediator.getName());
+
         mediatorsMap.put(mediator.getName(), mediator);
         mediator.onRegister();
 
@@ -57,7 +61,8 @@ public class Facade {
                 observers =  new SnapshotArray<>(INotifiable.class);
                 observersMap.put(notification, observers);
             }
-
+            if (oldMediator != null)
+                observers.removeValue(oldMediator, true);
             observers.add(mediator);
         }
 
@@ -68,12 +73,12 @@ public class Facade {
         return (T) mediatorsMap.get(name);
     }
 
-    public void removeMediator(String mediatorName) {
+    public IMediator removeMediator(String mediatorName) {
         IMediator mediator = mediatorsMap.get(mediatorName);
         mediatorsMap.remove(mediatorName);
 
         if (mediator == null)
-            return;
+            return null;
 
         mediator.onRemove();
 
@@ -81,7 +86,7 @@ public class Facade {
         mediator.listNotificationInterests(interests);
         if (interests.size == 0) {
             Pools.free(interests);
-            return;
+            return mediator;
         }
 
         for (String notification : interests) {
@@ -90,6 +95,7 @@ public class Facade {
         }
 
         Pools.free(interests);
+        return mediator;
     }
 
     public void registerCommand(String notification, ICommand command) {
@@ -100,9 +106,13 @@ public class Facade {
         }
         observers.add(command);
         command.onRegister();
+
+        commandsMap.put(notification, command);
     }
 
     public void removeCommand(String notification) {
+        commandsMap.remove(notification);
+
         SnapshotArray<INotifiable> observers = observersMap.get(notification);
         if (observers == null)
             return;
@@ -110,7 +120,7 @@ public class Facade {
         observersMap.remove(notification);
 
         INotifiable[] obs = observers.begin();
-        for (int i = 0; i < observers.size; i++) {
+        for (int i = 0, n = observers.size; i < n; i++) {
             obs[i].onRemove();
         }
         observers.end();
@@ -125,10 +135,13 @@ public class Facade {
         return (T) proxiesMap.get(name);
     }
 
-    public void removeProxy(String proxyName) {
+    public <T extends IProxy<?>> T removeProxy(String proxyName) {
         IProxy<?> proxy = proxiesMap.get(proxyName);
+        if (proxy == null) return null;
+
         proxiesMap.remove(proxyName);
         proxy.onRemove();
+        return (T) proxy;
     }
 
     public void sendNotification(String notification) {
@@ -145,20 +158,42 @@ public class Facade {
         n.setBody(body);
         n.setType(type);
 
-        SnapshotArray<INotifiable> observers = observersMap.get(notification);
+        sendNotification(n);
+
+        Pools.free(n);
+    }
+
+    public void sendNotification(INotification notification) {
+        SnapshotArray<INotifiable> observers = observersMap.get(notification.getName());
         if (observers != null) {
             INotifiable[] obs = observers.begin();
-            for (int i = 0; i < observers.size; i++) {
+            for (int i = 0, n = observers.size; i < n; i++) {
                 INotifiable observer = obs[i];
-
-                if (observer instanceof IMediator)
-                    ((IMediator) observer).handleNotification(n);
-                if (observer instanceof ICommand)
-                    ((ICommand) observer).execute(n);
+                observer.notify(notification);
             }
             observers.end();
         }
+    }
 
-        Pools.free(n);
+    public void executeCommand(INotification notification) {
+        ICommand command = commandsMap.get(notification.getName());
+        if (command == null) return;
+
+        command.execute(notification);
+    }
+
+    public boolean hasCommand(String name) {
+        ICommand command = commandsMap.get(name);
+        return command != null;
+    }
+
+    public boolean hasProxy(String name) {
+        IProxy<?> proxy = proxiesMap.get(name);
+        return proxy != null;
+    }
+
+    public boolean hasMediator(String name) {
+        IMediator mediator = mediatorsMap.get(name);
+        return mediator != null;
     }
 }

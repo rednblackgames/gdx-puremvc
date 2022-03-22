@@ -2,11 +2,11 @@ package games.rednblack.puremvc.commands;
 
 import com.badlogic.gdx.utils.SnapshotArray;
 
-import games.rednblack.puremvc.Notifier;
+import games.rednblack.puremvc.Command;
 import games.rednblack.puremvc.interfaces.ICommand;
 import games.rednblack.puremvc.interfaces.INotification;
 
-public class MacroCommand extends Notifier implements ICommand {
+public class MacroCommand extends Command {
     private final SnapshotArray<ICommand> subCommands;
 
     public MacroCommand() {

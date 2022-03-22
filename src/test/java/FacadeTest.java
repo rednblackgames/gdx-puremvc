@@ -2,9 +2,10 @@ import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.commands.MacroCommand;
 import games.rednblack.puremvc.commands.SimpleCommand;
 import games.rednblack.puremvc.interfaces.INotification;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class FacadeTest {
     private int macroCommandTest;
