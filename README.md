@@ -2,6 +2,9 @@
 
 This is a minimal implementation of [PureMVC](https://puremvc.org/) design pattern using [libGDX](https://libgdx.com) data structures.
 Currently, only the `Core` version using [Singletons](https://en.wikipedia.org/wiki/Singleton_pattern).
+
+The aim of the library to reduce memory allocation and improve performances for libGDX applications and uses Java Generics for less code.
+
 ### Integration
 
 #### Gradle
@@ -19,7 +22,7 @@ dependencies {
 <dependency>
   <groupId>games.rednblack.puremvc</groupId>
   <artifactId>core</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <type>pom</type>
 </dependency>
 ```

@@ -17,11 +17,12 @@
 package games.rednblack.puremvc.interfaces;
 
 /**
- * Utility Interface for objects that can be registered and removed in PureMVC.
+ * Interface definition of PureMVC Notifier structure.
  *
  * @author fgnm
  */
-public interface IRegistrable {
-    void onRegister();
-    void onRemove();
+public interface INotifier {
+    void sendNotification(String notification);
+    void sendNotification(String notification, Object body);
+    void sendNotification(String notification, Object body, String type);
 }
