@@ -56,7 +56,7 @@ public class Facade implements INotifier {
     private final ObjectMap<String, IProxy<?>> proxiesMap; //Model
     private final ObjectMap<String, ICommand> commandsMap; //Controller
 
-    private Facade() {
+    protected Facade() {
         observersMap = new ObjectMap<>();
         mediatorsMap = new ObjectMap<>();
         proxiesMap = new ObjectMap<>();
