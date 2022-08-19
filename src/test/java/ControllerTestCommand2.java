@@ -16,6 +16,11 @@ import games.rednblack.puremvc.interfaces.INotification;
  * @see ControllerTestVO ControllerTestVO
  */
 public class ControllerTestCommand2 extends SimpleCommand {
+    /*
+    Use a multiplier to check command state. Commands not instantiated with reflection keep the state between executions
+    while reflection commands have their own state
+     */
+    int mul = 1;
 
     /**
      * Fabricate a result by multiplying the input by 2 and adding to the existing result
@@ -27,6 +32,7 @@ public class ControllerTestCommand2 extends SimpleCommand {
         ControllerTestVO vo = notification.getBody();
 
         // Fabricate a result
-        vo.result = vo.result + (2 * vo.input);
+        vo.result = vo.result + (2 * vo.input * mul);
+        mul++;
     }
 }

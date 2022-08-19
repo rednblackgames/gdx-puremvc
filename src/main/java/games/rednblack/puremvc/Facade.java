@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SnapshotArray;
 
+import games.rednblack.puremvc.commands.ReflectionCommand;
 import games.rednblack.puremvc.interfaces.*;
 import games.rednblack.puremvc.util.Interests;
 
@@ -129,6 +130,10 @@ public class Facade implements INotifier {
         command.onRegister();
 
         commandsMap.put(notification, command);
+    }
+
+    public void registerCommand(String notification, Class<? extends ICommand> commandClass) {
+        registerCommand(notification, new ReflectionCommand(commandClass));
     }
 
     public void removeCommand(String notification) {

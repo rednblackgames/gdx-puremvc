@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test the PureMVC Controller class.
+ * Test the PureMVC Commands created with reflection.
  *
  * @see ControllerTestVO
  * @see ControllerTestCommand
  */
-public class ControllerTest {
+public class ControllerTestReflection {
 
     /**
      * Tests the Controller Singleton Factory Method
@@ -49,7 +49,7 @@ public class ControllerTest {
     public void testRegisterAndExecuteCommand() {
         // Create the controller, register the ControllerTestCommand to handle 'ControllerTest' notes
         Facade facade = Facade.getInstance();
-        facade.registerCommand("ControllerTest", new ControllerTestCommand());
+        facade.registerCommand("ControllerTest", ControllerTestCommand.class);
 
         // Create a 'ControllerTest' note
         ControllerTestVO vo = new ControllerTestVO(12);
@@ -74,7 +74,7 @@ public class ControllerTest {
     public void testRegisterAndRemoveCommand() {
         // Create the controller, register the ControllerTestCommand to handle 'ControllerTest' notes
         Facade facade = Facade.getInstance();
-        facade.registerCommand("ControllerRemoveTest", new ControllerTestCommand());
+        facade.registerCommand("ControllerRemoveTest", ControllerTestCommand.class);
 
         // Create a 'ControllerTest' note
         ControllerTestVO vo = new ControllerTestVO(12);
@@ -110,7 +110,7 @@ public class ControllerTest {
     public void testHasCommand() {
         // register the ControllerTestCommand to handle 'hasCommandTest' notes
         Facade facade = Facade.getInstance();
-        facade.registerCommand("hasCommandTest", new ControllerTestCommand());
+        facade.registerCommand("hasCommandTest", ControllerTestCommand.class);
 
         // test that hasCommand returns true for hasCommandTest notifications
         Assertions.assertTrue(facade.hasCommand("hasCommandTest"), "Expecting controller.hasCommand('hasCommandTest') == true");
@@ -135,13 +135,13 @@ public class ControllerTest {
     public void testReRegisterAndExecuteCommand() {
         // Fetch the controller, register the ControllerTestCommand2 to handle 'ControllerTest2' notes
         Facade facade = Facade.getInstance();
-        facade.registerCommand("ControllerTest2", new ControllerTestCommand2());
+        facade.registerCommand("ControllerTest2", ControllerTestCommand2.class);
 
         // Remove the Command from the Controller
         facade.removeCommand("ControllerTest2");
 
         // Re-register the Command with the Controller
-        facade.registerCommand("ControllerTest2", new ControllerTestCommand2());
+        facade.registerCommand("ControllerTest2", ControllerTestCommand2.class);
 
         // Create a 'ControllerTest2' note
         ControllerTestVO vo = new ControllerTestVO(12);
@@ -158,7 +158,7 @@ public class ControllerTest {
         facade.sendNotification(note);
 
         // if the command is executed twice the value will be 48
-        Assertions.assertEquals(72, vo.result, "Expecting vo.result == 48");
+        Assertions.assertEquals(48, vo.result, "Expecting vo.result == 48");
     }
 
 }
