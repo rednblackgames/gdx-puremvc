@@ -157,8 +157,8 @@ public class ControllerTest {
         // Prove that accumulation works in the VO by sending the notification again
         facade.sendNotification(note);
 
-        // if the command is executed twice the value will be 48
-        Assertions.assertEquals(72, vo.result, "Expecting vo.result == 48");
+        // if the command is executed twice the value will be 72
+        Assertions.assertEquals(72, vo.result, "Expecting vo.result == 72");
     }
 
 }
