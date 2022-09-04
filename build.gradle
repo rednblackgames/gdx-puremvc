@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'games.rednblack.puremvc'
-version '1.0.2'
+version '1.0.3'
 
 apply from : 'publish.gradle'
 
