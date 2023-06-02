@@ -41,6 +41,10 @@ public class MacroCommand extends Command {
         subCommands.add(command);
     }
 
+    protected final void removeSubCommand(ICommand command) {
+        subCommands.removeValue(command, true);
+    }
+
     @Override
     public final void execute(INotification notification) {
         ICommand[] commands = subCommands.begin();

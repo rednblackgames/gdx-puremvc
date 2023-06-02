@@ -1,8 +1,11 @@
 import games.rednblack.puremvc.Facade;
 import games.rednblack.puremvc.commands.MacroCommand;
 import games.rednblack.puremvc.commands.SimpleCommand;
+import games.rednblack.puremvc.interfaces.ICommand;
 import games.rednblack.puremvc.interfaces.INotification;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.InvocationTargetException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,7 +19,7 @@ public class FacadeTest {
     }
 
     @Test
-    public void testCommand() {
+    public void testCommand() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Facade facade = Facade.getInstance();
 
         facade.registerCommand("test", new SimpleCommand() {
@@ -29,6 +32,9 @@ public class FacadeTest {
         facade.sendNotification("test");
 
         facade.registerCommand("macroTest", new MacroCommand() {
+
+            private ICommand commandToRemove;
+
             @Override
             protected void initializeMacroCommand() {
                 for (int i = 0; i < 10; i++) {
@@ -40,12 +46,31 @@ public class FacadeTest {
                         }
                     });
                 }
+                commandToRemove = new SimpleCommand() {
+                    @Override
+                    public void execute(INotification notification) {
+                        assertEquals(notification.getName(), "macroTest");
+                        macroCommandTest++;
+                    }
+                };
+                addSubCommand(commandToRemove);
+            }
+
+            public void removeTestCommand() {
+                removeSubCommand(commandToRemove);
             }
         });
 
         facade.sendNotification("macroTest");
 
-        assertEquals(macroCommandTest, 10);
+        assertEquals(macroCommandTest, 11);
+
+        MacroCommand macroCommand = facade.retrieveCommand("macroTest");
+        macroCommand.getClass().getDeclaredMethod("removeTestCommand").invoke(macroCommand);
+
+        facade.sendNotification("macroTest");
+
+        assertEquals(macroCommandTest, 21);
     }
 
     @Test
