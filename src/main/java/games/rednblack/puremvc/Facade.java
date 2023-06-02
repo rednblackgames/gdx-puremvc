@@ -136,6 +136,10 @@ public class Facade implements INotifier {
         registerCommand(notification, new ReflectionCommand(commandClass));
     }
 
+    public <T extends ICommand> T retrieveCommand(String notification) {
+        return (T) commandsMap.get(notification);
+    }
+
     public void removeCommand(String notification) {
         commandsMap.remove(notification);
 
