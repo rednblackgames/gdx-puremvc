@@ -57,11 +57,17 @@ public class Facade implements INotifier {
     private final ObjectMap<String, IProxy<?>> proxiesMap; //Model
     private final ObjectMap<String, ICommand> commandsMap; //Controller
 
+    private Thread.UncaughtExceptionHandler uncaughtExceptionHandler = null;
+
     protected Facade() {
         observersMap = new ObjectMap<>();
         mediatorsMap = new ObjectMap<>();
         proxiesMap = new ObjectMap<>();
         commandsMap = new ObjectMap<>();
+    }
+
+    public void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+        this.uncaughtExceptionHandler = uncaughtExceptionHandler;
     }
 
     public void registerMediator(IMediator mediator) {
@@ -202,7 +208,14 @@ public class Facade implements INotifier {
             INotifiable[] obs = observers.begin();
             for (int i = 0, n = observers.size; i < n; i++) {
                 INotifiable observer = obs[i];
-                observer.notify(notification);
+                try {
+                    observer.notify(notification);
+                } catch (Exception e) {
+                    if (uncaughtExceptionHandler != null)
+                        uncaughtExceptionHandler.uncaughtException(Thread.currentThread(), e);
+                    else
+                        throw e;
+                }
             }
             observers.end();
         }
