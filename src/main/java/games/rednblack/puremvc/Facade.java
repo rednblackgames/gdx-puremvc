@@ -74,12 +74,12 @@ public class Facade implements INotifier {
         IMediator oldMediator = mediatorsMap.get(mediator.getName());
 
         mediatorsMap.put(mediator.getName(), mediator);
-        mediator.onRegister();
 
         Interests interests = Pools.obtain(Interests.class);
         mediator.listNotificationInterests(interests);
         if (interests.size == 0) {
             Pools.free(interests);
+            mediator.onRegister();
             return;
         }
 
@@ -95,6 +95,7 @@ public class Facade implements INotifier {
         }
 
         Pools.free(interests);
+        mediator.onRegister();
     }
 
     public <T extends IMediator> T retrieveMediator(String name) {
@@ -107,8 +108,6 @@ public class Facade implements INotifier {
 
         if (mediator == null)
             return null;
-
-        mediator.onRemove();
 
         Interests interests = Pools.obtain(Interests.class);
         mediator.listNotificationInterests(interests);
@@ -123,6 +122,7 @@ public class Facade implements INotifier {
         }
 
         Pools.free(interests);
+        mediator.onRemove();
         return mediator;
     }
 
@@ -133,9 +133,9 @@ public class Facade implements INotifier {
             observersMap.put(notification, observers);
         }
         observers.add(command);
-        command.onRegister();
 
         commandsMap.put(notification, command);
+        command.onRegister();
     }
 
     public void registerCommand(String notification, Class<? extends ICommand> commandClass) {
