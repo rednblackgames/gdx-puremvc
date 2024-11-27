@@ -113,6 +113,7 @@ public class Facade implements INotifier {
         mediator.listNotificationInterests(interests);
         if (interests.size == 0) {
             Pools.free(interests);
+            mediator.onRemove();
             return mediator;
         }
 
