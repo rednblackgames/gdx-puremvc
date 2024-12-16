@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.Pool;
 import games.rednblack.puremvc.interfaces.INotification;
 
 /**
- * Implementation of standard PureMVC notification. Ready to be used with {@link com.badlogic.gdx.utils.Pools}
+ * Implementation of standard PureMVC notification. Ready to be used with {@link com.badlogic.gdx.utils.Pool}
  *
  * @author fgnm
  */

@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.Pool;
 
 /**
  * Utility class that stores notification interests for {@link games.rednblack.puremvc.interfaces.IMediator} objects.
- * Based on {@link Array}, designed to be used in {@link com.badlogic.gdx.utils.Pools}.
+ * Based on {@link Array}, designed to be used in {@link com.badlogic.gdx.utils.Pool}.
  *
  * @author fgnm
  */
