@@ -20,7 +20,9 @@ import com.badlogic.gdx.utils.*;
 
 import games.rednblack.puremvc.commands.ReflectionCommand;
 import games.rednblack.puremvc.interfaces.*;
+import games.rednblack.puremvc.util.DefaultPoolsProvider;
 import games.rednblack.puremvc.util.Interests;
+import games.rednblack.puremvc.util.PoolsProvider;
 
 /**
  * Facade Singleton implementation, handles Models, Views and Controls as internal fields.
@@ -57,14 +59,17 @@ public class Facade implements INotifier {
 
     private Thread.UncaughtExceptionHandler uncaughtExceptionHandler = null;
 
-    private final Pool<Interests> interestsPool = new ReflectionPool<>(Interests.class);
-    private final Pool<Notification> notificationPool = new ReflectionPool<>(Notification.class);
+    private PoolsProvider poolsProvider = new DefaultPoolsProvider();
 
     protected Facade() {
         observersMap = new ObjectMap<>();
         mediatorsMap = new ObjectMap<>();
         proxiesMap = new ObjectMap<>();
         commandsMap = new ObjectMap<>();
+    }
+
+    public void setPoolsProvider(PoolsProvider poolsProvider) {
+        this.poolsProvider = poolsProvider;
     }
 
     public void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
@@ -76,10 +81,10 @@ public class Facade implements INotifier {
 
         mediatorsMap.put(mediator.getName(), mediator);
 
-        Interests interests = interestsPool.obtain();
+        Interests interests = poolsProvider.obtain(Interests.class);
         mediator.listNotificationInterests(interests);
         if (interests.size == 0) {
-            interestsPool.free(interests);
+            poolsProvider.free(interests);
             mediator.onRegister();
             return;
         }
@@ -95,7 +100,7 @@ public class Facade implements INotifier {
             observers.add(mediator);
         }
 
-        interestsPool.free(interests);
+        poolsProvider.free(interests);
         mediator.onRegister();
     }
 
@@ -110,10 +115,10 @@ public class Facade implements INotifier {
         if (mediator == null)
             return null;
 
-        Interests interests = interestsPool.obtain();
+        Interests interests = poolsProvider.obtain(Interests.class);
         mediator.listNotificationInterests(interests);
         if (interests.size == 0) {
-            interestsPool.free(interests);
+            poolsProvider.free(interests);
             mediator.onRemove();
             return mediator;
         }
@@ -123,7 +128,7 @@ public class Facade implements INotifier {
             observers.removeValue(mediator, true);
         }
 
-        interestsPool.free(interests);
+        poolsProvider.free(interests);
         mediator.onRemove();
         return mediator;
     }
@@ -194,14 +199,14 @@ public class Facade implements INotifier {
 
     @Override
     public void sendNotification(String notification, Object body, String type) {
-        Notification n = notificationPool.obtain();
+        Notification n = poolsProvider.obtain(Notification.class);
         n.setName(notification);
         n.setBody(body);
         n.setType(type);
 
         sendNotification(n);
 
-        notificationPool.free(n);
+        poolsProvider.free(n);
     }
 
     public void sendNotification(INotification notification) {
