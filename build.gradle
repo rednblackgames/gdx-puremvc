@@ -3,13 +3,13 @@ plugins {
 }
 
 group 'games.rednblack.puremvc'
-version '1.0.4'
+version '1.0.5'
 
 apply from : 'publish.gradle'
 
 repositories {
     mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
 }
 
 dependencies {
