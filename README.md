@@ -9,7 +9,7 @@ The aim of the library to reduce memory allocation and improve performances for 
 
 #### Gradle
 ![maven-central](https://img.shields.io/maven-central/v/games.rednblack.puremvc/core?color=blue&label=release)
-![sonatype-nexus](https://img.shields.io/nexus/s/games.rednblack.puremvc/core?label=snapshot&server=https%3A%2F%2Foss.sonatype.org)
+![sonatype-nexus](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fgames%2Frednblack%2Fpuremvc%2Fcore%2Fmaven-metadata.xml)
 
 ```groovy
 dependencies {
