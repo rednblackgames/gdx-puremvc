@@ -1,42 +1,29 @@
 package games.rednblack.puremvc.util;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.PoolManager;
+import games.rednblack.puremvc.Notification;
 
 public class DefaultPoolsProvider implements PoolsProvider {
+    PoolManager POOLS = new PoolManager(Interests::new, Notification::new);
+
     @Override
     public <T> T obtain(Class<T> type) {
-        return Pools.obtain(type);
+        return POOLS.obtain(type);
     }
 
     @Override
     public void free(Object object) {
-        Pools.free(object);
-    }
-
-    @Override
-    public void freeAll(Array objects) {
-        Pools.freeAll(objects);
-    }
-
-    @Override
-    public void freeAll(Array objects, boolean samePool) {
-        Pools.freeAll(objects, samePool);
+        POOLS.free(object);
     }
 
     @Override
     public <T> Pool<T> get(Class<T> type) {
-        return Pools.get(type);
+        return POOLS.getPool(type);
     }
 
     @Override
-    public <T> Pool<T> get(Class<T> type, int max) {
-        return Pools.get(type, max);
-    }
-
-    @Override
-    public <T> void set(Class<T> type, Pool<T> pool) {
-        Pools.set(type, pool);
+    public <T> void set(Pool<T> pool) {
+        POOLS.addPool(pool);
     }
 }
